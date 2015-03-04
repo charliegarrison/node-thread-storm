@@ -58,7 +58,7 @@ if(cluster.isMaster) {
       var index = availableWorkers.indexOf(worker.id);
       if(index === -1) {
         availableWorkers.push(worker.id);
-        console.log("worker " + worker.id + " is ready for work");
+        console.log("worker " + worker.id + " is ready for work, and a little too excited about it.");
       }
     };
 
@@ -116,7 +116,7 @@ if(cluster.isMaster) {
     waitForForking = function() {
       setTimeout(function() {
         if(Object.keys(workers).length < CPUs.length) {
-          console.log("Not all of the workers are up yet. No worries, going to keep waiting for these slackers workers to come online. You can sit back and watch Dragon Ball Z");
+          console.log("Not all of the workers are up yet. No worries, going to keep waiting for these slackers to come online. You can sit back and watch Dragon Ball Z");
           taskRunner.waitForForking();
         }
         else {
@@ -148,7 +148,7 @@ else if(cluster.isWorker) {
 
   process.on('message', function(msgObj) {
     if(msgObj.cmd === "run") {
-      console.log("worker " + worker.id +  " here, about run a task. Thank you for this opportunity, I a pretty stoked. :)");
+      console.log("worker " + worker.id +  " here, about run task "+msgObj.task+". Thank you for this opportunity, I am stoked. :)");
       taskToRun=require(msgObj.task);
       taskToRun(msgObj.data,module.exports);
     }
