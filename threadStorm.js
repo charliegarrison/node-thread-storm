@@ -102,12 +102,12 @@ if(cluster.isMaster) {
 
       cluster.on('disconnect', function(worker) {
         console.log("worker " + worker.id + " has disconnected. The nerve...");
-        taskRunner.setWorkerUnAvailable(worker);
+        setWorkerUnAvailable(worker);
       });
 
       cluster.on('exit', function(worker, code, signal) {
         console.log("worker " + worker.process.pid + " died. It was a massacre");
-        taskRunner.setWorkerUnAvailable(worker);
+        setWorkerUnAvailable(worker);
       });
 
 
@@ -122,7 +122,6 @@ if(cluster.isMaster) {
         else {
           ee.emit("ready");
           console.log("All workers are up and running. Let's put them to work.");
-          //taskRunner.loop();
         }
       },1000);
     };
