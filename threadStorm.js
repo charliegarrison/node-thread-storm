@@ -117,7 +117,7 @@ if(cluster.isMaster) {
       setTimeout(function() {
         if(Object.keys(workers).length < CPUs.length) {
           console.log("Not all of the workers are up yet. No worries, going to keep waiting for these slackers to come online. You can sit back and watch Dragon Ball Z");
-          taskRunner.waitForForking();
+          waitForForking();
         }
         else {
           ee.emit("ready");
