@@ -41,6 +41,16 @@ The second arg will be passed as the first argument to your function.
 The second arg passed to your function will be the module.exports of a job runner which are methods as follows:
  taskCommunicator (to pass data back to your main code)
  completed (to be called when your background code finished. If you ever want it to finish and free up the thread for other jobs.)
+ 
+ your javascript file might look something like this:
+ 
+ ```javascript
+ module.exports = function(sessionData,parent) {
+  setTimeout(function() {
+    parent.completed();
+  },10000);
+};
+```
 
 you can also listen to the following events from threadStorm.ee
 
