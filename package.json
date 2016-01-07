@@ -1,0 +1,27 @@
+{
+  "name": "thread-storm",
+  "version": "0.0.2",
+  "description": "Easy multithreading in node",
+  "main": "threadStorm.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charliegarrison/node-thread-storm.git"
+  },
+  "keywords": [
+    "thread",
+    "multithreading",
+    "multi",
+    "threading",
+    "node",
+    "javascript"
+  ],
+  "author": "Charlie Garrison",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/charliegarrison/node-thread-storm/issues"
+  },
+  "homepage": "https://github.com/charliegarrison/node-thread-storm#readme"
+}
