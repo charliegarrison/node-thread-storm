@@ -3,13 +3,17 @@ Multithreading in node. node-thread-storm allows you to run code simultaneously 
 
 Using the thread storm library is simple and straight forward. Below is a simple example. First, require the library.
 
-`threadStorm = require('./threadStorm.js')`
+```javascript
+threadStorm = require('./threadStorm.js')
+```
 
 The next part might seem a little strange, but you need to return if threadStorm.isMaster flag is false;
 
-```javascriptif(!threadStorm.isMaster) {
+```javascript
+if(!threadStorm.isMaster) {
   return;
-}`
+}
+```
 
 Start the library and wait for the background threads to be ready.
 
@@ -23,7 +27,9 @@ threadStorm.start();
 
 Once the library is ready you can run tasks on the background threads as easy as
 
-`threadStorm.runTask("./someFile.js",{someKey: "some value"});`
+```javascript
+threadStorm.runTask("./someFile.js",{someKey: "some value"});
+```
 
 The first arg is the path and name of a JS files of code u want run.
 
