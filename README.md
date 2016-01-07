@@ -2,7 +2,7 @@
 Multithreading in node. node-thread-storm allows you to run code simultaneously using node's cluster funcionality.
 
 
-'npm install thread-storm'
+`npm install thread-storm`
 
 Using the thread storm library is simple and straight forward. Below is a simple example. First, require the library.
 
