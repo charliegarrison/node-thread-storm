@@ -148,7 +148,7 @@ else if(cluster.isWorker) {
   process.on('message', function(msgObj) {
     if(msgObj.cmd === "run") {
       console.log("worker " + worker.id +  " here, about run task "+msgObj.task+". Thank you for this opportunity, I am stoked. :)");
-      taskToRun=require("../../"+msgObj.task);
+      taskToRun=require(process.cwd()+"/"+msgObj.task);
       taskToRun(msgObj.data,module.exports);
     }
   });
