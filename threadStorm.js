@@ -101,13 +101,25 @@ if(cluster.isMaster) {
       });
 
       cluster.on('disconnect', function(worker) {
-        console.log("worker " + worker.id + " has disconnected. The nerve...");
+        console.log(worker.suicide);
+        if(worker.suicide) {
+          console.log("worker " + worker.id + " has disconnected. It is ok, it was intentional and very tasteful if I may be so bold.");
+        }
+        else {
+          console.log("worker " + worker.id + " has disconnected. The nerve...");
+        }
         setWorkerUnAvailable(worker);
       });
 
       cluster.on('exit', function(worker, code, signal) {
-        console.log("worker " + worker.process.pid + " died. It was a massacre");
+        if(worker.suicide) {
+          console.log("worker " + worker.process.pid + " died. It completed its mission in life.");
+        }
+        else {
+          console.log("worker " + worker.process.pid + " died. It was a massacre");
+        }
         setWorkerUnAvailable(worker);
+        cluster.fork();
       });
 
 
@@ -143,6 +155,7 @@ else if(cluster.isWorker) {
   //you can call when your task is completed
   module.exports.completed = function(msgObj) {
     process.send({msg: 'completed'});
+    worker.kill();
   }
 
   process.on('message', function(msgObj) {
