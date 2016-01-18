@@ -101,7 +101,6 @@ if(cluster.isMaster) {
       });
 
       cluster.on('disconnect', function(worker) {
-        console.log(worker.suicide);
         if(worker.suicide) {
           console.log("worker " + worker.id + " has disconnected. It is ok, it was intentional and very tasteful if I may be so bold.");
         }
