@@ -31,6 +31,7 @@ threadStorm.start();
 Once the library is ready you can run tasks on the background threads as easy as
 
 ```javascript
+//returns boolean. True if thread was available, false if not
 threadStorm.runTask("someFile.js",{someKey: "some value"});
 ```
 
@@ -41,9 +42,9 @@ The second arg will be passed as the first argument to your function.
 The second arg passed to your function will be the module.exports of a job runner which are methods as follows:
  taskCommunicator (to pass data back to your main code)
  completed (to be called when your background code finished. If you ever want it to finish and free up the thread for other jobs.)
- 
+
  your javascript file might look something like this:
- 
+
  ```javascript
  module.exports = function(sessionData,parent) {
   setTimeout(function() {
@@ -56,8 +57,6 @@ you can also listen to the following events from threadStorm.ee
 
 msg - get a message from the task running
 
+taskFailed - called when your task fails (if the thread dies unexpectedly)
+
 taskComplete - called when your tasks completes
-
-
-
-
