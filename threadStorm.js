@@ -26,14 +26,14 @@ if(cluster.isMaster) {
    threadStorm.runTask = function(task,data) {
      var msgObj,
       msg;
+    var worker = getAvailableWorker();//workers[availableWorkers[0]];
 
-     if(availableWorkers.length > 0) {
+     if(worker) {
        msg = "Running Worker";
        msgObj = {
          status: 1,
          msg:msg
        };
-       var worker = workers[availableWorkers[0]];
 
        taskMapping[worker.id]=task;
        setWorkerUnAvailable(worker);
@@ -57,19 +57,38 @@ if(cluster.isMaster) {
      }
    };
 
+    getAvailableWorker = function() {
+      var worker = null;
+
+      for(let i = 0; i<availableWorkers.length;i++) {
+        if(availableWorkers[i] !== null) {
+          worker = workers[availableWorkers[i]];
+          break;
+        }
+      }
+
+      return worker;
+    };
+
     setWorkerAvailable = function(worker) {
-      var index = availableWorkers.indexOf(worker.id);
+      var index = availableWorkers.indexOf(null);//worker.id
       if(index === -1) {
         availableWorkers.push(worker.id);
-        console.log("worker " + worker.id + " is ready for work, and a little too excited about it.");
       }
+      else {
+        availableWorkers[index] = worker.id;
+      }
+      console.log("worker " + worker.id + " is ready for work, and a little too excited about it.");
     };
 
     setWorkerUnAvailable = function(worker) {
       var index = availableWorkers.indexOf(worker.id);
 
+      delete workers[worker.id];
+
       if(index > -1) {
-        availableWorkers.splice(index,index+1);
+        availableWorkers[index] = null;
+        //availableWorkers.splice(index,index+1);
         console.log("worker " + worker.id + " has been removed from available workers");
       }
 
@@ -104,7 +123,7 @@ if(cluster.isMaster) {
       });
 
       cluster.on('disconnect', function(worker) {
-        if(worker.suicide) {
+        if(worker.exitedAfterDisconnect) {
           console.log("worker " + worker.id + " has disconnected. It is ok, it was intentional and very tasteful if I may be so bold.");
         }
         else {
@@ -115,11 +134,11 @@ if(cluster.isMaster) {
       });
 
       cluster.on('exit', function(worker, code, signal) {
-        if(worker.suicide) {
-          console.log("worker " + worker.process.pid + " died. It completed its mission in life.");
+        if(worker.exitedAfterDisconnect) {
+          console.log("worker " + worker.id + " died. It completed its mission in life.");
         }
         else {
-          console.log("worker " + worker.process.pid + " died. It was a massacre");
+          console.log("worker " + worker.id + " died. It was a massacre");
         }
         setWorkerUnAvailable(worker);
         cluster.fork();
