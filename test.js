@@ -27,4 +27,6 @@ threadStorm.ee.on('taskFailed', function() {
   console.log(arguments);
 });
 
-threadStorm.start();
+threadStorm.start({
+  threadsPerCore: 3
+});

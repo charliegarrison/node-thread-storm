@@ -1,6 +1,6 @@
 {
   "name": "thread-storm",
-  "version": "0.0.8",
+  "version": "0.1.8",
   "description": "Easy multithreading in node",
   "main": "threadStorm.js",
   "scripts": {

@@ -13,12 +13,17 @@ if(cluster.isMaster) {
    CPUs = require('os').cpus(),
    taskMapping={};
 
-   threadStorm.start = function() {
+   threadStorm.start = function(config) {
+     config = config || {
+       threadsPerCore: 1
+     };
      registerListeners();
      waitForForking();
 
      CPUs.forEach(function() {
-       cluster.fork();
+       for(let i=0; i < config.threadsPerCore; i++) {
+         cluster.fork();
+       }
      });
    };
 
@@ -109,6 +114,7 @@ if(cluster.isMaster) {
         worker.on('message', function(msgObj) {
           if(msgObj.msg === "completed") {
             console.log("worker " + worker.id + " has completed running your code! TURN UP!");
+            workers[worker.id]=worker;
             setWorkerAvailable(worker);
             ee.emit('taskComplete',{task: taskMapping[worker.id]});
           }
@@ -177,7 +183,7 @@ else if(cluster.isWorker) {
   //you can call when your task is completed
   module.exports.completed = function(msgObj) {
     process.send({msg: 'completed'});
-    worker.kill();
+    //worker.kill();
   }
 
   process.on('message', function(msgObj) {
