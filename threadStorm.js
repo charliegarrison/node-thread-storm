@@ -2,7 +2,8 @@ var events = require('events'),
   eventEmitter = new events.EventEmitter(),
   threadStorm=module.exports={},
   ee = threadStorm.ee = eventEmitter,
-  cluster = require('cluster');
+  cluster = require('cluster'),
+	config;
 
 
 
@@ -13,8 +14,8 @@ if(cluster.isMaster) {
    CPUs = require('os').cpus(),
    taskMapping={};
 
-   threadStorm.start = function(config) {
-     config = config || {
+   threadStorm.start = function(threadStormConfig) {
+     config = threadStormConfig || {
        threadsPerCore: 1
      };
      registerListeners();
@@ -76,23 +77,27 @@ if(cluster.isMaster) {
     };
 
     setWorkerAvailable = function(worker) {
-      var index = availableWorkers.indexOf(null);//worker.id
-      if(index === -1) {
+      var index = availableWorkers.indexOf(worker.id);
+      /*if(index === -1) {
         availableWorkers.push(worker.id);
       }
       else {
         availableWorkers[index] = worker.id;
-      }
+      }*/
+        availableWorkers.push(worker.id);
       console.log("worker " + worker.id + " is ready for work, and a little too excited about it.");
     };
 
     setWorkerUnAvailable = function(worker) {
       var index = availableWorkers.indexOf(worker.id);
 
-      delete workers[worker.id];
+			if(config.killOnComplete) {
+	      delete workers[worker.id];
+			}
 
       if(index > -1) {
-        availableWorkers[index] = null;
+        //availableWorkers[index] = null;
+				availableWorkers.splice(index,1);
         //availableWorkers.splice(index,index+1);
         console.log("worker " + worker.id + " has been removed from available workers");
       }
@@ -101,7 +106,6 @@ if(cluster.isMaster) {
 
     registerListeners = function() {
       cluster.on('fork',function(worker) {
-
       });
 
       cluster.on('online',function(worker) {
@@ -114,8 +118,13 @@ if(cluster.isMaster) {
         worker.on('message', function(msgObj) {
           if(msgObj.msg === "completed") {
             console.log("worker " + worker.id + " has completed running your code! TURN UP!");
-            workers[worker.id]=worker;
-            setWorkerAvailable(worker);
+            //workers[worker.id]=worker;
+            if(config.killOnComplete) {
+							worker.kill();
+						}
+						else {
+							setWorkerAvailable(worker);
+						}
             ee.emit('taskComplete',{task: taskMapping[worker.id]});
           }
           else {
@@ -183,7 +192,7 @@ else if(cluster.isWorker) {
   //you can call when your task is completed
   module.exports.completed = function(msgObj) {
     process.send({msg: 'completed'});
-    //worker.kill();
+			//worker.kill();
   }
 
   process.on('message', function(msgObj) {
