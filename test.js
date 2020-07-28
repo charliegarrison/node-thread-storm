@@ -13,7 +13,6 @@ threadStorm.ee.on('ready', function() {
     threadStorm.runTask("testTask.js",{length: 1890});
     threadStorm.runTask("testTask.js",{length: 100});
     threadStorm.runTask("testTask.js",{length: 100});
-    threadStorm.runTask("testTask.js",{length: 100});
     /*threadStorm.runTask("testTask.js",{length: 25});
     threadStorm.runTask("testTask.js",{length: 500});
     threadStorm.runTask("testTask.js",{length: 4000});
@@ -26,8 +25,8 @@ threadStorm.ee.on('ready', function() {
 });
 
 threadStorm.ee.on('taskFailed', function() {
-  console.log("***TASK FAILED***");
-  console.log(arguments);
+  //console.log("***TASK FAILED***");
+  //console.log(arguments);
 });
 
 threadStorm.start({

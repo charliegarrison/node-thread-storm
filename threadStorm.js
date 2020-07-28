@@ -43,14 +43,14 @@ if(cluster.isMaster) {
 
        taskMapping[worker.id]=task;
        setWorkerUnAvailable(worker);
+			 return worker.send({
+				 cmd: 'run',
+				 task: task,
+				 data: data
+			 });
 
-       worker.send({
-         cmd: 'run',
-         task: task,
-         data: data
-       });
 
-       return true;
+
      }
      else {
        msg = "Currently there are no available workers to run " + task + ". What a sham.";
@@ -131,6 +131,10 @@ if(cluster.isMaster) {
             ee.emit('msg',msgObj);
           }
         });
+
+				worker.on('error', function(err) {
+					console.log(`worker error ${err}`);
+				});
       });
 
       cluster.on('listening',function(worker,address) {
@@ -175,6 +179,10 @@ if(cluster.isMaster) {
       },1000);
     };
 
+		process.on('uncaughtException',function(err) {
+		  console.log("totally uncaught exception");
+		  console.log(err.stack);
+		});
 
 
 }
